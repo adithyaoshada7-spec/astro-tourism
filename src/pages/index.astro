@@ -1,16 +1,207 @@
 ---
+import { getCollection } from 'astro:content';
+import '../styles/global.css';
+
+const places = await getCollection('places');
+
+// JSON-LD WebSite Schema for SEO & AEO
+const siteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Explore Sri Lanka | Luxury Travel Directory",
+  "description": "Curated luxury travel guides, heritage escapes, and breathtaking destinations in Sri Lanka.",
+  "url": "https://astro-tourism.vercel.app",
+};
 ---
 
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Explore Sri Lanka | Luxury Travel & Destination Directory</title>
+    <meta name="description" content="Discover the wonder of Sri Lanka. Handcrafted luxury travel guides to iconic landmarks, UNESCO heritage fortresses, pristine beaches, and misty mountain retreats." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <script type="application/ld+json" set:html={JSON.stringify(siteSchema)} />
+  </head>
+  <body class="bg-[#FBFBF9] text-[#1E293B] antialiased selection:bg-amber-100 selection:text-amber-900" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+
+    <!-- Top Luxury Navigation Bar -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+        <a href="/" class="flex items-center gap-2 group">
+          <span class="w-8 h-8 rounded-full bg-emerald-700 flex items-center justify-center text-white text-xs font-serif font-bold">SL</span>
+          <span class="text-xl font-bold tracking-tight text-stone-900 group-hover:text-emerald-800 transition">
+            EXPLORE <span class="text-emerald-700 font-light">SRI LANKA</span>
+          </span>
+        </a>
+        <div class="flex items-center gap-6 text-sm font-medium text-stone-600">
+          <a href="#destinations" class="hover:text-emerald-700 transition">Destinations</a>
+          <a href="#highlights" class="hover:text-emerald-700 transition">About</a>
+          <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs px-3 py-1 rounded-full font-semibold">
+            {places.length} Verified Guides
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Grand Hero Section -->
+    <section class="relative min-h-[520px] md:min-h-[580px] w-full overflow-hidden bg-stone-950 flex items-center">
+      <img 
+        src="https://images.unsplash.com/photo-1546708973-b339540b5162?q=80&w=1800" 
+        alt="Sri Lanka Landscape" 
+        class="absolute inset-0 w-full h-full object-cover object-center brightness-60 scale-105"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-[#FBFBF9] via-stone-950/40 to-stone-950/80"></div>
+
+      <div class="relative max-w-7xl mx-auto px-6 py-20 text-center">
+        <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md text-stone-100 text-xs uppercase tracking-widest font-semibold px-4 py-1.5 rounded-full border border-white/30 mb-6">
+          <span>🌿</span> The Resplendent Island
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold text-white tracking-tight font-serif drop-shadow-md max-w-4xl mx-auto leading-tight" style="font-family: 'Playfair Display', serif;">
+          Discover Sri Lanka’s Timeless Wonders
+        </h1>
+
+        <p class="text-stone-200 text-lg md:text-xl mt-6 max-w-2xl mx-auto font-light leading-relaxed">
+          From ancient cloud-kissed fortresses to coastal ramparts and sacred temples, explore an autonomous, AI-curated luxury directory.
+        </p>
+
+        <div class="mt-8 flex justify-center gap-4">
+          <a href="#destinations" class="bg-emerald-700 hover:bg-emerald-800 text-white font-semibold px-8 py-3.5 rounded-full transition shadow-lg inline-flex items-center gap-2">
+            Explore Destinations
+            <span>↓</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Directory Highlights Strip -->
+    <section id="highlights" class="bg-white border-y border-stone-200/80 py-8 shadow-sm">
+      <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+        <div class="flex items-center gap-4 justify-center md:justify-start">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl shrink-0 font-bold">
+            🏛️
+          </div>
+          <div>
+            <h4 class="font-bold text-stone-900 text-base">UNESCO Heritage & Culture</h4>
+            <p class="text-stone-500 text-xs mt-0.5">Deeply researched historical insights</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 justify-center md:justify-start">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl shrink-0 font-bold">
+            ✨
+          </div>
+          <div>
+            <h4 class="font-bold text-stone-900 text-base">AEO & AI Search Verified</h4>
+            <p class="text-stone-500 text-xs mt-0.5">Structured fast facts for modern travelers</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 justify-center md:justify-start">
+          <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl shrink-0 font-bold">
+            🤖
+          </div>
+          <div>
+            <h4 class="font-bold text-stone-900 text-base">Autonomous Intelligence</h4>
+            <p class="text-stone-500 text-xs mt-0.5">Continuously expanding travel directory</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Destinations Grid Section -->
+    <main id="destinations" class="max-w-7xl mx-auto px-6 py-16">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+        <div>
+          <span class="text-xs uppercase font-bold tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">
+            Featured Destinations
+          </span>
+          <h2 class="text-3xl md:text-4xl font-bold font-serif text-stone-900 mt-3" style="font-family: 'Playfair Display', serif;">
+            Curated Places to Visit
+          </h2>
+          <p class="text-stone-600 mt-2 text-base">
+            Select a destination to view full travel guides, itinerary tips, and historical facts.
+          </p>
+        </div>
+        <div class="text-sm text-stone-500">
+          Showing <span class="font-bold text-emerald-800">{places.length}</span> destinations
+        </div>
+      </div>
+
+      <!-- Places Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {places.map((place) => (
+          <article class="bg-white rounded-2xl overflow-hidden border border-stone-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group">
+            <!-- Card Image -->
+            <div class="relative h-64 w-full overflow-hidden bg-stone-100">
+              <img 
+                src={place.data.heroImage || "https://images.unsplash.com/photo-1586861635167-e5223aadc9fe?q=80&w=800"} 
+                alt={place.data.title}
+                class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"
+                loading="lazy"
+              />
+              <div class="absolute top-4 left-4">
+                <span class="bg-stone-900/80 backdrop-blur-md text-white text-xs font-semibold uppercase tracking-wider px-3 py-1 rounded-full">
+                  {place.data.category}
+                </span>
+              </div>
+              <div class="absolute top-4 right-4">
+                <span class="bg-white/90 backdrop-blur-md text-stone-900 text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">
+                  ⭐ {place.data.rating}
+                </span>
+              </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="p-6 flex flex-col flex-grow justify-between">
+              <div>
+                <div class="text-xs font-semibold text-emerald-700 uppercase tracking-wider mb-1">
+                  📍 {place.data.location}, {place.data.district}
+                </div>
+                <h3 class="text-xl font-bold font-serif text-stone-900 group-hover:text-emerald-800 transition leading-snug" style="font-family: 'Playfair Display', serif;">
+                  <a href={`/places/${place.id}`}>
+                    {place.data.title}
+                  </a>
+                </h3>
+                <p class="text-stone-600 text-sm mt-3 line-clamp-3 leading-relaxed">
+                  {place.data.description}
+                </p>
+              </div>
+
+              <div class="mt-6 pt-5 border-t border-stone-100 flex items-center justify-between">
+                <span class="text-xs text-stone-500 font-medium">
+                  ⏱️ {place.data.bestTimeToVisit.split('(')[0]}
+                </span>
+                <a 
+                  href={`/places/${place.id}`} 
+                  class="text-sm font-semibold text-emerald-700 hover:text-emerald-900 inline-flex items-center gap-1 group-hover:translate-x-1 transition"
+                >
+                  Read Guide <span>→</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-900 text-stone-400 text-sm py-14 border-t border-stone-800">
+      <div class="max-w-7xl mx-auto px-6 text-center">
+        <div class="flex items-center justify-center gap-2 mb-3">
+          <span class="w-7 h-7 rounded-full bg-emerald-700 flex items-center justify-center text-white text-xs font-serif font-bold">SL</span>
+          <span class="text-lg font-bold tracking-tight text-white">
+            EXPLORE <span class="text-emerald-400 font-light">SRI LANKA</span>
+          </span>
+        </div>
+        <p class="text-stone-300 font-serif text-base mb-2">Autonomous Luxury Sri Lanka Travel Directory</p>
+        <p class="text-xs text-stone-500 max-w-md mx-auto">
+          Built with Astro v5, Tailwind CSS, and Gemini Autonomous Agent. Real-time updates delivered automatically to Vercel.
+        </p>
+      </div>
+    </footer>
+
+  </body>
 </html>
