@@ -1,0 +1,214 @@
+---
+import { getCollection, render } from 'astro:content';
+import '../../styles/global.css';
+
+export async function getStaticPaths() {
+  const places = await getCollection('places');
+  return places.map((place) => ({
+    params: { slug: place.id },
+    props: { place },
+  }));
+}
+
+const { place } = Astro.props;
+const { Content } = await render(place);
+
+// Structured Schema for Google & AEO
+const touristSchema = {
+  "@context": "https://schema.org",
+  "@type": "TouristAttraction",
+  "name": place.data.title,
+  "description": place.data.description,
+  "touristType": place.data.category,
+  "location": {
+    "@type": "Place",
+    "name": `${place.data.location}, ${place.data.district}, Sri Lanka`,
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": place.data.rating,
+    "reviewCount": 140,
+  }
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{place.data.title} | Sri Lanka Travel Directory</title>
+    <meta name="description" content={place.data.description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <script type="application/ld+json" set:html={JSON.stringify(touristSchema)} />
+  </head>
+  <body class="bg-[#FBFBF9] text-[#1E293B] antialiased selection:bg-amber-100 selection:text-amber-900" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+
+    <!-- Top Luxury Navigation Bar -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-stone-200/80 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+        <a href="/" class="flex items-center gap-2 group">
+          <span class="w-8 h-8 rounded-full bg-emerald-700 flex items-center justify-center text-white text-xs font-serif font-bold">SL</span>
+          <span class="text-xl font-bold tracking-tight text-stone-900 group-hover:text-emerald-800 transition">
+            EXPLORE <span class="text-emerald-700 font-light">SRI LANKA</span>
+          </span>
+        </a>
+        <div class="flex items-center gap-6 text-sm font-medium text-stone-600">
+          <a href="/destinations" class="hover:text-emerald-700 transition">Destinations</a>
+          <a href="/itineraries" class="hover:text-emerald-700 transition">Itineraries</a>
+          <a href="/guides" class="hover:text-emerald-700 transition">Travel Tips</a>
+          <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs px-3 py-1 rounded-full font-semibold">
+            AI Verified Guide
+          </span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section (Love Sri Lanka Magazine Banner) -->
+    <section class="relative h-[550px] w-full overflow-hidden bg-stone-900">
+      <img 
+        src={place.data.heroImage || "https://images.unsplash.com/photo-1586861635167-e5223aadc9fe?q=80&w=1600"} 
+        alt={place.data.title}
+        class="w-full h-full object-cover object-center brightness-75 scale-105 transition duration-700"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-stone-950/30 to-transparent"></div>
+      
+      <div class="absolute inset-0 flex items-end">
+        <div class="max-w-7xl mx-auto px-6 pb-12 w-full">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="bg-emerald-600 text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full">
+              {place.data.category}
+            </span>
+            <span class="bg-white/20 backdrop-blur-md text-white text-xs font-semibold px-3 py-1 rounded-full border border-white/30">
+              ⭐ {place.data.rating} Rating
+            </span>
+          </div>
+
+          <h1 class="text-4xl md:text-6xl font-bold text-white tracking-tight drop-shadow-sm font-serif" style="font-family: 'Playfair Display', serif;">
+            {place.data.title}
+          </h1>
+
+          <p class="text-stone-200 text-lg mt-3 max-w-2xl font-light">
+            {place.data.description}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Insights Bar (Stats strip) -->
+    <section class="bg-white border-b border-stone-200/80 shadow-sm relative z-10">
+      <div class="max-w-7xl mx-auto px-6 py-5 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div>
+          <span class="text-xs uppercase font-bold tracking-wider text-stone-400 block">Location</span>
+          <p class="text-stone-800 font-semibold text-base mt-0.5">📍 {place.data.location}, {place.data.district}</p>
+        </div>
+        <div>
+          <span class="text-xs uppercase font-bold tracking-wider text-stone-400 block">Best Time to Visit</span>
+          <p class="text-stone-800 font-semibold text-base mt-0.5">⏱️ {place.data.bestTimeToVisit}</p>
+        </div>
+        <div>
+          <span class="text-xs uppercase font-bold tracking-wider text-stone-400 block">Experience Type</span>
+          <p class="text-stone-800 font-semibold text-base mt-0.5">🌿 {place.data.category} Expedition</p>
+        </div>
+        <div>
+          <span class="text-xs uppercase font-bold tracking-wider text-stone-400 block">Recommended Duration</span>
+          <p class="text-stone-800 font-semibold text-base mt-0.5">🕒 Half Day to Full Day</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <main class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12">
+      
+      <!-- Left Column: Editorial Markdown Article (8 cols) -->
+      <article class="lg:col-span-8 space-y-10">
+        <div class="bg-white rounded-2xl p-8 md:p-10 border border-stone-200/80 shadow-sm">
+          <div class="prose prose-stone prose-lg max-w-none prose-headings:font-serif prose-headings:text-stone-900 prose-h2:text-2xl prose-h2:border-b prose-h2:border-stone-100 prose-h2:pb-3 prose-p:leading-relaxed prose-p:text-stone-700">
+            <Content />
+          </div>
+        </div>
+
+        <!-- Practical Visitor FAQs (AEO friendly) -->
+        <div class="bg-white rounded-2xl p-8 border border-stone-200/80 shadow-sm space-y-6">
+          <h2 class="text-2xl font-bold font-serif text-stone-900" style="font-family: 'Playfair Display', serif;">
+            Essential Visitor Information
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+            <div class="bg-stone-50 rounded-xl p-5 border border-stone-200/60">
+              <span class="text-emerald-700 font-bold block mb-1">🎫 Entrance & Tickets</span>
+              <p class="text-stone-600 text-sm leading-relaxed">Available at the central ticket counter or online. Bring exact currency or international debit/credit cards.</p>
+            </div>
+            <div class="bg-stone-50 rounded-xl p-5 border border-stone-200/60">
+              <span class="text-emerald-700 font-bold block mb-1">👟 What to Pack</span>
+              <p class="text-stone-600 text-sm leading-relaxed">Light cotton clothing, walking shoes or trainers, sun hat, UV protection, and minimum 1.5L drinking water.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Right Column: AEO Sidebar + Trip Planner (4 cols) -->
+      <aside class="lg:col-span-4 space-y-8">
+        
+        <!-- AEO Fast Facts Card -->
+        <div class="bg-emerald-950 text-white rounded-2xl p-7 shadow-lg relative overflow-hidden">
+          <div class="flex items-center gap-2 text-emerald-400 font-bold uppercase tracking-wider text-xs mb-3">
+            <span>⚡</span> At A Glance (Key Facts)
+          </div>
+          <h3 class="text-xl font-bold font-serif mb-5 text-white" style="font-family: 'Playfair Display', serif;">
+            Why It's Extraordinary
+          </h3>
+
+          <ul class="space-y-4 text-sm text-emerald-100">
+            {place.data.keyHighlights.map((fact) => (
+              <li class="flex items-start gap-3 leading-relaxed">
+                <span class="w-5 h-5 rounded-full bg-emerald-800 text-emerald-300 flex items-center justify-center shrink-0 text-xs font-bold mt-0.5">✓</span>
+                <span>{fact}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Plan Your Trip CTA Card -->
+        <div class="bg-white rounded-2xl p-7 border border-stone-200/80 shadow-sm text-center">
+          <span class="text-xs uppercase font-bold tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">
+            Tailored Tours
+          </span>
+          <h4 class="text-xl font-bold text-stone-900 mt-4 mb-2 font-serif" style="font-family: 'Playfair Display', serif;">
+            Explore {place.data.title}
+          </h4>
+          <p class="text-stone-600 text-sm mb-6">
+            Connect with certified local guides and chauffeur drivers for a seamless experience.
+          </p>
+          <a href="#" class="block w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold py-3 rounded-xl transition shadow-md">
+            Inquire Tour Packages
+          </a>
+        </div>
+
+        <!-- Tags List -->
+        <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm">
+          <h4 class="text-xs uppercase font-bold text-stone-400 tracking-wider mb-4">Related Topics</h4>
+          <div class="flex flex-wrap gap-2">
+            {place.data.tags.map((tag) => (
+              <span class="text-xs font-medium bg-stone-100 hover:bg-stone-200 text-stone-700 px-3 py-1.5 rounded-lg border border-stone-200/50 transition">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
+      </aside>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-900 text-stone-400 text-sm py-12 mt-20 border-t border-stone-800">
+      <div class="max-w-7xl mx-auto px-6 text-center">
+        <p class="text-stone-300 font-serif text-lg mb-2">Explore Sri Lanka Travel Directory</p>
+        <p>© 2026 AI-Automated Travel Hub. Curated autonomously for global travelers.</p>
+      </div>
+    </footer>
+
+  </body>
+</html>
