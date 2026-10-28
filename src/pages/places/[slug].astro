@@ -6,11 +6,14 @@ export async function getStaticPaths() {
   const places = await getCollection('places');
   return places.map((place) => ({
     params: { slug: place.id },
-    props: { place },
+    props: { 
+      place,
+      otherPlaces: places.filter((p) => p.id !== place.id),
+    },
   }));
 }
 
-const { place } = Astro.props;
+const { place, otherPlaces } = Astro.props;
 const { Content } = await render(place);
 
 // Structured Schema for Google & AEO
@@ -56,9 +59,8 @@ const touristSchema = {
           </span>
         </a>
         <div class="flex items-center gap-6 text-sm font-medium text-stone-600">
-          <a href="/destinations" class="hover:text-emerald-700 transition">Destinations</a>
-          <a href="/itineraries" class="hover:text-emerald-700 transition">Itineraries</a>
-          <a href="/guides" class="hover:text-emerald-700 transition">Travel Tips</a>
+          <a href="/#destinations" class="hover:text-emerald-700 transition">Destinations</a>
+          <a href="/#highlights" class="hover:text-emerald-700 transition">About</a>
           <span class="bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs px-3 py-1 rounded-full font-semibold">
             AI Verified Guide
           </span>
@@ -125,7 +127,7 @@ const touristSchema = {
       <!-- Left Column: Editorial Markdown Article (8 cols) -->
       <article class="lg:col-span-8 space-y-10">
         <div class="bg-white rounded-2xl p-8 md:p-10 border border-stone-200/80 shadow-sm">
-          <div class="prose prose-stone prose-lg max-w-none prose-headings:font-serif prose-headings:text-stone-900 prose-h2:text-2xl prose-h2:border-b prose-h2:border-stone-100 prose-h2:pb-3 prose-p:leading-relaxed prose-p:text-stone-700">
+          <div class="prose prose-stone prose-lg max-w-none prose-headings:font-serif prose-headings:text-stone-900 prose-h2:text-2xl prose-h2:border-b prose-h2:border-stone-100 prose-h2:pb-3 prose-p:leading-relaxed prose-p:text-stone-700 prose-a:text-emerald-700 prose-a:font-semibold prose-a:underline hover:prose-a:text-emerald-900">
             <Content />
           </div>
         </div>
@@ -186,6 +188,37 @@ const touristSchema = {
           </a>
         </div>
 
+        <!-- Related Destinations Backlinks (Sidebar) -->
+        {otherPlaces && otherPlaces.length > 0 && (
+          <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm">
+            <h4 class="text-xs uppercase font-bold text-stone-400 tracking-wider mb-4">
+              Explore More Places
+            </h4>
+            <div class="space-y-3">
+              {otherPlaces.map((other) => (
+                <a 
+                  href={`/places/${other.id}`}
+                  class="flex items-center gap-3 p-2 rounded-xl hover:bg-stone-50 transition group"
+                >
+                  <img 
+                    src={other.data.heroImage || "https://images.unsplash.com/photo-1586861635167-e5223aadc9fe?q=80&w=200"} 
+                    alt={other.data.title}
+                    class="w-12 h-12 rounded-lg object-cover shrink-0 group-hover:scale-105 transition"
+                  />
+                  <div class="min-w-0">
+                    <h5 class="text-xs font-bold text-stone-900 group-hover:text-emerald-800 transition truncate">
+                      {other.data.title}
+                    </h5>
+                    <span class="text-[11px] text-stone-500">
+                      📍 {other.data.location}
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
         <!-- Tags List -->
         <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm">
           <h4 class="text-xs uppercase font-bold text-stone-400 tracking-wider mb-4">Related Topics</h4>
@@ -202,8 +235,73 @@ const touristSchema = {
 
     </main>
 
+    <!-- Bottom Itinerary Section: Cross-Page Backlinks Grid -->
+    {otherPlaces && otherPlaces.length > 0 && (
+      <section class="max-w-7xl mx-auto px-6 pb-16">
+        <div class="bg-stone-100/70 border border-stone-200/80 rounded-3xl p-8 md:p-12">
+          <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+            <div>
+              <span class="text-xs uppercase font-bold tracking-widest text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full">
+                Connect Your Itinerary
+              </span>
+              <h2 class="text-2xl md:text-3xl font-bold font-serif text-stone-900 mt-3" style="font-family: 'Playfair Display', serif;">
+                Recommended Sri Lanka Destinations
+              </h2>
+              <p class="text-stone-600 text-sm mt-1">
+                Continue your journey across Sri Lanka with these handpicked destinations.
+              </p>
+            </div>
+            <a href="/" class="text-sm font-semibold text-emerald-700 hover:text-emerald-900 inline-flex items-center gap-1 transition">
+              Back to Directory Home <span>→</span>
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {otherPlaces.map((other) => (
+              <article class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm hover:shadow-md transition flex flex-col justify-between group">
+                <div class="flex items-center gap-4 mb-4">
+                  <img 
+                    src={other.data.heroImage || "https://images.unsplash.com/photo-1586861635167-e5223aadc9fe?q=80&w=300"} 
+                    alt={other.data.title}
+                    class="w-16 h-16 rounded-xl object-cover shrink-0 group-hover:scale-105 transition"
+                  />
+                  <div class="min-w-0">
+                    <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                      {other.data.category}
+                    </span>
+                    <h3 class="font-serif font-bold text-stone-900 text-sm group-hover:text-emerald-800 transition truncate mt-1">
+                      <a href={`/places/${other.id}`}>
+                        {other.data.title}
+                      </a>
+                    </h3>
+                    <p class="text-xs text-stone-500 mt-0.5">
+                      📍 {other.data.location}, {other.data.district}
+                    </p>
+                  </div>
+                </div>
+
+                <p class="text-stone-600 text-xs line-clamp-2 mb-4 leading-relaxed">
+                  {other.data.description}
+                </p>
+
+                <div class="pt-3 border-t border-stone-100 flex items-center justify-between text-xs">
+                  <span class="text-stone-500">⭐ {other.data.rating}</span>
+                  <a 
+                    href={`/places/${other.id}`}
+                    class="font-semibold text-emerald-700 hover:text-emerald-900 inline-flex items-center gap-1 group-hover:translate-x-1 transition"
+                  >
+                    View Guide <span>→</span>
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
     <!-- Footer -->
-    <footer class="bg-stone-900 text-stone-400 text-sm py-12 mt-20 border-t border-stone-800">
+    <footer class="bg-stone-900 text-stone-400 text-sm py-12 border-t border-stone-800">
       <div class="max-w-7xl mx-auto px-6 text-center">
         <p class="text-stone-300 font-serif text-lg mb-2">Explore Sri Lanka Travel Directory</p>
         <p>© 2026 AI-Automated Travel Hub. Curated autonomously for global travelers.</p>

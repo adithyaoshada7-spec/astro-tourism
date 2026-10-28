@@ -17,7 +17,10 @@ Generate an in-depth, accurate, and captivating travel guide for a specific tour
 - **tags**: 3-5 relevant lowercase tags.
 - **keyHighlights**: Exactly 3 bullet points with standout historical or travel facts for AEO/AI answer engines.
 
-## Content Structure:
+## Content Structure & SEO Internal Linking:
 1. ## Overview (Rich historical & cultural backdrop)
 2. ## Top Things to Do & See
 3. ## Insider Local Travel Tips
+
+## Internal Backlinks (Crucial for SEO):
+- You MUST weave in 1 or 2 natural contextual markdown backlinks to other already covered destinations using relative links like `[Sigiriya Ancient Rock Fortress](/places/sigiriya)`, `[Dambulla Cave Temple](/places/dambulla-cave-temple)`, or `[Galle Fort](/places/galle-fort)`.
