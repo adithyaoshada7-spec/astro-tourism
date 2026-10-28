@@ -1,0 +1,51 @@
+name: Autonomous Tourism Agent
+
+on:
+  schedule:
+    # Runs daily at 02:30 UTC (8:00 AM Sri Lanka Time)
+    - cron: '30 2 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI button anytime
+
+permissions:
+  contents: write
+
+jobs:
+  generate-destination:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci || npm install
+
+      - name: Run Autonomous AI Content Agent
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: npx tsx scripts/agent.ts
+
+      - name: Commit and Push New Destination
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Stage new markdown files
+          git add src/content/places/
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No new changes detected."
+          else
+            git commit -m "feat(content): autonomously published new destination guide"
+            git push origin main
+            echo "Successfully published and pushed new destination."
+          fi
